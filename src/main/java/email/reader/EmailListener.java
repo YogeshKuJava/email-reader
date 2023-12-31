@@ -44,7 +44,15 @@ public class EmailListener extends MessageCountAdapter {
                 for (Message message : messages) {
                     try {
                         // Implement your email processing logic here
-                        System.out.println("New email received: " + message.getSubject());
+                        System.out.println("New email received Subject: " + message.getSubject());
+                        System.out.println("AllRecipients : " + message.getAllRecipients());
+                        System.out.println("New email received: " + message.getFileName());
+                        try {
+							System.out.println("New email received: " + message.getContent().toString());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
                     } catch (MessagingException e) {
                         e.printStackTrace();
                     }
