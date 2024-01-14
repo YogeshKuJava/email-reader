@@ -38,9 +38,12 @@ public class QRExtractor {
 		} catch (ChecksumException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("The file is a not a QR Code");
 		} catch (FormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("The file is a not a QR Code");
+
 		}
 
 		return (String) result.getText();
