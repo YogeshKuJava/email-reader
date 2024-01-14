@@ -9,9 +9,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>spring-boot-docker-complete</artifactId>
+	<artifactId>email-reader</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-docker-complete</name>
+	<name>email-reader</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
@@ -38,6 +38,12 @@
 			<groupId>com.sun.mail</groupId>
 			<artifactId>imap</artifactId>
 			<version>1.6.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.3.0</version>
 		</dependency>
 
 
