@@ -74,11 +74,11 @@ public class EmailListener extends MessageCountAdapter {
 
 									if (bodyPart.getDisposition() != null) {
 							            String bodyText = extractTextFromMessage(message);
-							            System.out.println("Email Body:\n" + bodyText);
+							            System.out.println("=========================================================" + bodyText);
+							            System.out.println("=========================================================");
 										readMessageBodyText(bodyText);
 									}
-									if (bodyPart.getDisposition() != null
-											&& bodyPart.getDisposition().equalsIgnoreCase(Part.ATTACHMENT)) {// For attachment
+									if (bodyPart.getDisposition() != null) {// For attachment
 										readStoreAttachment(bodyPart);
 									}
 								}							
@@ -166,7 +166,7 @@ public class EmailListener extends MessageCountAdapter {
                 BodyPart bodyPart = multipart.getBodyPart(i);
 
                 // Check if the part is text/plain or text/html
-                if (bodyPart.isMimeType("text/plain") || bodyPart.isMimeType("text/html")) {
+                if (bodyPart.isMimeType("text/plain")) {
                     textContent.append(bodyPart.getContent());
                 } else if (bodyPart.getContent() instanceof Multipart) {
                     // Recursively extract text from nested multipart
@@ -189,7 +189,7 @@ public class EmailListener extends MessageCountAdapter {
             BodyPart bodyPart = multipart.getBodyPart(i);
 
             // Check if the part is text/plain or text/html
-            if (bodyPart.isMimeType("text/plain") || bodyPart.isMimeType("text/html")) {
+            if (bodyPart.isMimeType("text/plain")) {
                 textContent.append(bodyPart.getContent());
             } else if (bodyPart.getContent() instanceof Multipart) {
                 // Recursively extract text from nested multipart
