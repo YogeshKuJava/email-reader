@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.zxing.BinaryBitmap;
@@ -21,31 +23,33 @@ import com.google.zxing.common.HybridBinarizer;
 
 @Service
 public class QRExtractor {
+	private static final Logger logger = LoggerFactory.getLogger(QRExtractor.class);
 
 	String readQRCode(String filePath) throws IOException, NotFoundException {
+
 		BufferedImage image = ImageIO.read(new File(filePath));
 		LuminanceSource source = new BufferedImageLuminanceSource(image);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
 		Reader reader = new MultiFormatReader();
 		Result result = null;
+		String QRCodeURL = null;
 		try {
 			result = reader.decode(bitmap);
-			System.out.println("The file is a QR Code");
+			logger.debug("The file is a QR Code");
+			QRCodeURL = new QRExtractor().readQRCode(filePath);
+			if (QRCodeURL != null) {
+				logger.debug("QR Code URL : " + QRCodeURL);
+			}
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			logger.error("File not Found " + e.getCause());
 		} catch (ChecksumException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("The file is a not a QR Code");
+
+			logger.error("The file is a not a QR Code " + e.getCause());
 		} catch (FormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("The file is a not a QR Code");
-
+			logger.error("The file is a not a QR Code " + e.getCause());
 		}
-
 		return (String) result.getText();
 	}
 

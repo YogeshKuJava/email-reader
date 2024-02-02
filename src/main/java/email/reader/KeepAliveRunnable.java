@@ -1,9 +1,15 @@
 package email.reader;
 import javax.mail.MessagingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.mail.imap.IMAPFolder;
 
 public class KeepAliveRunnable implements Runnable {
+	
+    private static final Logger logger = LoggerFactory.getLogger(KeepAliveRunnable.class);
+    
     private static final long KEEP_ALIVE_FREQ = 300000; // 5 minutes
     private IMAPFolder folder;
     public KeepAliveRunnable(IMAPFolder folder) {
@@ -17,7 +23,7 @@ public class KeepAliveRunnable implements Runnable {
                 Thread.sleep(KEEP_ALIVE_FREQ);
 
                 // Perform a NOOP to keep the connection alive
-                System.out.println("Performing a NOOP to keep the connection alive");
+                logger.debug("Performing a NOOP to keep the connection alive");
                 folder.doCommand(protocol -> {
                     protocol.simpleCommand("NOOP", null);
                     return null;
@@ -26,8 +32,8 @@ public class KeepAliveRunnable implements Runnable {
                 // Ignore, just aborting the thread...
             } catch (MessagingException e) {
                 // Shouldn't really happen...
-                System.out.println("Unexpected exception while keeping alive the IDLE connection");
-                e.printStackTrace();
+            	logger.error("Unexpected exception while keeping alive the IDLE connection");
+                //e.printStackTrace();
             }
         }
     }
