@@ -37,7 +37,7 @@ public class QRExtractor {
 			Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
 			hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
 			result = new MultiFormatReader().decode(binaryBitmap, hints);
-			logger.debug("The file is a QR Code");
+			logger.info("The file is a QR Code");
 			qrCodeUrlList.add(result.getText());
 			return qrCodeUrlList;
 		} catch (NotFoundException e) {

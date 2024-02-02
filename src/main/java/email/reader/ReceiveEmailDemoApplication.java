@@ -25,9 +25,6 @@ public class ReceiveEmailDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		// ApplicationContext context = new
-		// AnnotationConfigApplicationContext(EmailConfiguration.class);
-		// EmailListener emailListener = context.getBean(EmailListener.class);
 		try {
 			emailListener.startListening();
 		} catch (MessagingException e) {

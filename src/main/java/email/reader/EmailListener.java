@@ -32,12 +32,12 @@ public class EmailListener extends MessageCountAdapter {
 	private String password;
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailListener.class);
-	
+
 	@Autowired
 	ApiService apiService;
 	@Autowired
 	QRExtractor qrExtractor;
-	
+
 	public EmailListener(Session session, String username, String password) {
 		this.session = session;
 		this.username = username;
@@ -59,51 +59,50 @@ public class EmailListener extends MessageCountAdapter {
 			@Override
 			public void messagesAdded(MessageCountEvent event) {
 				// Process the newly added messages
+
 				Message[] messages = event.getMessages();
 				for (Message message : messages) {
 					try {
-						// Implement your email processing logic here
+
 						logger.info("New email received Subject: " + message.getSubject());
-						//logger.info("AllRecipients : " + message.getAllRecipients().toString());
-						//logger.info("New email From " + message.getFrom().toString());
+						if (!(message.getContent() instanceof Multipart)) {
+							String bodyText = extractTextFromMessage(message);
+							logger.info("====>>>" + bodyText + "<<<=====");
 
-						try {
-							if (message.getContent() instanceof String) {
-								String bodyText = extractTextFromMessage(message);
-								List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
-								logger.info("Email Body:\n" + bodyText);
+							List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
+							if (urlListFromMessageBody.size() > 0) {
+								logger.info("Validating the URL from Message Body");
+								apiService.validateURLS(urlListFromMessageBody); // Calls the virustotal API
+							}
+						} else {
+							Multipart multipart = (Multipart) message.getContent();
+							logger.info("multipart.getCount()" + multipart.getCount());
+							int printURL = 0;
+							for (int i = 0; i < multipart.getCount(); i++) {								
+								BodyPart bodyPart = multipart.getBodyPart(i);
+								if (bodyPart.getDisposition() == null && printURL == 0) { // For message body
+									String bodyText = extractTextFromMessage(message);
+									logger.info("====>>>" + bodyText + "<<<=====");
 
-							} else if (message.getContent() instanceof Multipart) {
-								Multipart multipart = (Multipart) message.getContent();
-								System.out.println("multipart.getCount()" + multipart.getCount());
-								for (int i = 0; i < multipart.getCount(); i++) {
-									BodyPart bodyPart = multipart.getBodyPart(i);
-
-									if (bodyPart.getDisposition() != null) {
-										String bodyText = extractTextFromMessage(message);
-										logger.info("====>>>" + bodyText + "<<<=====");
-
-										List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
-										if (urlListFromMessageBody.size() > 0) {
-											logger.info("Validating the URL from Message Body");
-											apiService.validateURLS(urlListFromMessageBody); // Calls the virustotal API 
-										}
+									List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
+									if (urlListFromMessageBody.size() > 0) {
+										logger.info("Validating the URL from Message Body");
+										apiService.validateURLS(urlListFromMessageBody); // Calls the virustotal API
 									}
-									if (bodyPart.getDisposition() != null) {// For attachment
-										List<String> urlListFromQRCode = readStoreAttachment(bodyPart);
-										if (urlListFromQRCode.size() > 0) {
-											logger.info("Validating the URL from QR Code Body");
-											apiService.validateURLS(urlListFromQRCode); // Calls the virustotal API  
-										}
+									printURL++;
+								}
+								if (bodyPart.getDisposition() != null) {// For attachment
+									List<String> urlListFromQRCode = readStoreAttachment(bodyPart);
+									if (urlListFromQRCode.size() > 0) {
+										logger.info("Validating the URL from QR Code Body");
+										apiService.validateURLS(urlListFromQRCode); // Calls the virustotal API
 									}
 								}
 							}
-
-						} catch (IOException | NotFoundException e) {
-						   logger.error("Exception in startListening"+e.getMessage()+ " Cause : "+e.getCause());						
 						}
-					} catch (MessagingException e) {
-						   logger.error("Exception in startListening"+e.getMessage()+ " Cause : "+e.getCause());						
+
+					} catch (MessagingException | IOException | NotFoundException e) {
+						logger.error("Exception in startListening" + e.getMessage() + " Cause : " + e.getCause());
 					}
 				}
 			}
@@ -113,10 +112,10 @@ public class EmailListener extends MessageCountAdapter {
 		// Start the IDLE Loop
 		while (!Thread.interrupted()) {
 			try {
-				//logger.info("Starting IDLE");
+				// logger.info("Starting IDLE");
 				inbox.idle();
 			} catch (MessagingException e) {
-				logger.info("Messaging exception during IDLE");				
+				logger.info("Messaging exception during IDLE");
 				throw new RuntimeException(e);
 			}
 		}
@@ -154,7 +153,8 @@ public class EmailListener extends MessageCountAdapter {
 		return urlList;
 	}
 
-	public List<String> readStoreAttachment(BodyPart bodyPart) throws MessagingException, IOException, NotFoundException {
+	public List<String> readStoreAttachment(BodyPart bodyPart)
+			throws MessagingException, IOException, NotFoundException {
 		List<String> urlList = new ArrayList<String>();
 		MimeBodyPart mimeBodyPart = (MimeBodyPart) bodyPart;
 		System.out.println("Attachment Name: " + mimeBodyPart.getFileName());
@@ -164,7 +164,7 @@ public class EmailListener extends MessageCountAdapter {
 		File imageFileName = new File(fileName);
 		if (isImage(imageFileName)) {
 			logger.info("The file is an image.");
-			urlList=qrExtractor.readQRCode(fileName);
+			urlList = qrExtractor.readQRCode(fileName);
 		}
 		return urlList;
 	}

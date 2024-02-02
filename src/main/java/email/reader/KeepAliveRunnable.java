@@ -23,16 +23,16 @@ public class KeepAliveRunnable implements Runnable {
                 Thread.sleep(KEEP_ALIVE_FREQ);
 
                 // Perform a NOOP to keep the connection alive
-                logger.debug("Performing a NOOP to keep the connection alive");
+                logger.info("Performing a NOOP to keep the connection alive");
                 folder.doCommand(protocol -> {
                     protocol.simpleCommand("NOOP", null);
                     return null;
                 });
             } catch (InterruptedException e) {
-                // Ignore, just aborting the thread...
+            	logger.error("Unexpected exception while keeping alive the IDLE connection "+e.getMessage()+" Cause : "+e.getCause());
             } catch (MessagingException e) {
                 // Shouldn't really happen...
-            	logger.error("Unexpected exception while keeping alive the IDLE connection");
+            	logger.error("Unexpected exception while keeping alive the IDLE connection "+e.getMessage()+" Cause : "+e.getCause());
                 //e.printStackTrace();
             }
         }
