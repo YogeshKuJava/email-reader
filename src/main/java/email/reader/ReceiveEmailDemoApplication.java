@@ -31,12 +31,11 @@ public class ReceiveEmailDemoApplication implements CommandLineRunner {
 		try {
 			emailListener.startListening();
 		} catch (MessagingException e) {
-			logger.error("Exception in ReceiveEmailDemoApplication.run " + e.getMessage() + " Cause : " + e.getCause());
+			logger.error("Exception in run " + e.getMessage() + " Cause : " + e.getCause());
 		} catch (InterruptedException e) {
-			logger.error("Exception in ReceiveEmailDemoApplication.run " + e.getMessage() + " Cause : " + e.getCause());
+			logger.error("Exception in run " + e.getMessage() + " Cause : " + e.getCause());
 		} catch (IOException e) {
-			logger.error("Exception while Listening in ReceiveEmailDemoApplication.run " + e.getMessage() + " Cause : "
-					+ e.getCause());
+			logger.error("Exception while Listening in run " + e.getMessage() + " Cause : " + e.getCause());
 		}
 	}
 }

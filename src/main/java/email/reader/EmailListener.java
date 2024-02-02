@@ -90,10 +90,10 @@ public class EmailListener extends MessageCountAdapter {
 							}
 
 						} catch (IOException | NotFoundException e) {
-						   logger.error("Exception in EmailListener.startListening"+e.getMessage()+ " Cause : "+e.getCause());						
+						   logger.error("Exception in startListening"+e.getMessage()+ " Cause : "+e.getCause());						
 						}
 					} catch (MessagingException e) {
-						   logger.error("Exception in EmailListener.startListening"+e.getMessage()+ " Cause : "+e.getCause());						
+						   logger.error("Exception in startListening"+e.getMessage()+ " Cause : "+e.getCause());						
 					}
 				}
 			}
@@ -202,18 +202,4 @@ public class EmailListener extends MessageCountAdapter {
 
 		return textContent.toString();
 	}
-	/*
-	 * String validateURL(List<String> urlList) throws IOException { for (String url
-	 * : urlList) { AsyncHttpClient client = new DefaultAsyncHttpClient();
-	 * client.prepare("POST",
-	 * "https://www.virustotal.com/api/v3/urls").setHeader("accept",
-	 * "application/json") .setHeader("x-apikey",
-	 * "86138a91c63d79dcaa45a30e1a912f8264603e9986282339706df2d9fe2fb21f")
-	 * .setHeader("content-type",
-	 * "application/x-www-form-urlencoded").setBody("url=" + url).execute()
-	 * .toCompletableFuture().thenAccept(System.out::println).join();
-	 * client.close(); } return " URLS Tested";
-	 * 
-	 * }
-	 */
 }
