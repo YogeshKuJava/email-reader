@@ -21,6 +21,7 @@ import javax.mail.internet.MimeBodyPart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.zxing.NotFoundException;
 import com.sun.mail.imap.IMAPFolder;
@@ -31,7 +32,12 @@ public class EmailListener extends MessageCountAdapter {
 	private String password;
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailListener.class);
-
+	
+	@Autowired
+	ApiService apiService;
+	@Autowired
+	QRExtractor qrExtractor;
+	
 	public EmailListener(Session session, String username, String password) {
 		this.session = session;
 		this.username = username;
@@ -58,8 +64,8 @@ public class EmailListener extends MessageCountAdapter {
 					try {
 						// Implement your email processing logic here
 						logger.info("New email received Subject: " + message.getSubject());
-						logger.info("AllRecipients : " + message.getAllRecipients());
-						logger.info("New email From " + message.getFrom());
+						//logger.info("AllRecipients : " + message.getAllRecipients().toString());
+						//logger.info("New email From " + message.getFrom().toString());
 
 						try {
 							if (message.getContent() instanceof String) {
@@ -71,7 +77,6 @@ public class EmailListener extends MessageCountAdapter {
 								Multipart multipart = (Multipart) message.getContent();
 								System.out.println("multipart.getCount()" + multipart.getCount());
 								for (int i = 0; i < multipart.getCount(); i++) {
-									System.out.println(" i value " + i);
 									BodyPart bodyPart = multipart.getBodyPart(i);
 
 									if (bodyPart.getDisposition() != null) {
@@ -80,11 +85,16 @@ public class EmailListener extends MessageCountAdapter {
 
 										List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
 										if (urlListFromMessageBody.size() > 0) {
-											// validateURL(urlListFromMessageBody);
+											logger.info("Validating the URL from Message Body");
+											apiService.validateURLS(urlListFromMessageBody); // Calls the virustotal API 
 										}
 									}
 									if (bodyPart.getDisposition() != null) {// For attachment
-										readStoreAttachment(bodyPart);
+										List<String> urlListFromQRCode = readStoreAttachment(bodyPart);
+										if (urlListFromQRCode.size() > 0) {
+											logger.info("Validating the URL from QR Code Body");
+											apiService.validateURLS(urlListFromQRCode); // Calls the virustotal API  
+										}
 									}
 								}
 							}
@@ -103,7 +113,7 @@ public class EmailListener extends MessageCountAdapter {
 		// Start the IDLE Loop
 		while (!Thread.interrupted()) {
 			try {
-				logger.info("Starting IDLE");
+				//logger.info("Starting IDLE");
 				inbox.idle();
 			} catch (MessagingException e) {
 				logger.info("Messaging exception during IDLE");				
@@ -144,8 +154,8 @@ public class EmailListener extends MessageCountAdapter {
 		return urlList;
 	}
 
-	public void readStoreAttachment(BodyPart bodyPart) throws MessagingException, IOException, NotFoundException {
-
+	public List<String> readStoreAttachment(BodyPart bodyPart) throws MessagingException, IOException, NotFoundException {
+		List<String> urlList = new ArrayList<String>();
 		MimeBodyPart mimeBodyPart = (MimeBodyPart) bodyPart;
 		System.out.println("Attachment Name: " + mimeBodyPart.getFileName());
 		String fileName = "./documents/" + mimeBodyPart.getFileName();
@@ -153,9 +163,10 @@ public class EmailListener extends MessageCountAdapter {
 		mimeBodyPart.saveFile(fileName);
 		File imageFileName = new File(fileName);
 		if (isImage(imageFileName)) {
-			logger.debug("The file is an image.");
-			new QRExtractor().readQRCode(fileName);
+			logger.info("The file is an image.");
+			urlList=qrExtractor.readQRCode(fileName);
 		}
+		return urlList;
 	}
 
 	private static String extractTextFromMessage(Message message) throws MessagingException, IOException {
