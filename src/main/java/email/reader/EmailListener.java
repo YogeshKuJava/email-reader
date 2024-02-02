@@ -65,7 +65,7 @@ public class EmailListener extends MessageCountAdapter {
 					try {
 
 						logger.info("New email received Subject: " + message.getSubject());
-						if (!(message.getContent() instanceof Multipart)) {
+						if (message.getContent() instanceof String) {
 							String bodyText = extractTextFromMessage(message);
 							logger.info("====>>>" + bodyText + "<<<=====");
 
@@ -112,7 +112,7 @@ public class EmailListener extends MessageCountAdapter {
 		// Start the IDLE Loop
 		while (!Thread.interrupted()) {
 			try {
-				// logger.info("Starting IDLE");
+				 logger.info("Starting IDLE");
 				inbox.idle();
 			} catch (MessagingException e) {
 				logger.info("Messaging exception during IDLE");
