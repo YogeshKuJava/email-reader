@@ -59,10 +59,10 @@ public class EmailListener extends MessageCountAdapter {
 			@Override
 			public void messagesAdded(MessageCountEvent event) {
 				// Process the newly added messages
-
 				Message[] messages = event.getMessages();
 				for (Message message : messages) {
 					try {
+						//JOptionPane.showMessageDialog(null, "New Message "+ message.getSubject(), "Message", JOptionPane.INFORMATION_MESSAGE);
 
 						logger.info("New email received Subject: " + message.getSubject());
 						if (message.getContent() instanceof String) {
@@ -72,7 +72,7 @@ public class EmailListener extends MessageCountAdapter {
 							List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
 							if (urlListFromMessageBody.size() > 0) {
 								logger.info("Validating the URL from Message Body");
-								apiService.validateURLS(urlListFromMessageBody); // Calls the virustotal API
+								apiService.validateURLS(urlListFromMessageBody, message.getSubject()); // Calls the virustotal API
 							}
 						} else {
 							Multipart multipart = (Multipart) message.getContent();
@@ -87,7 +87,7 @@ public class EmailListener extends MessageCountAdapter {
 									List<String> urlListFromMessageBody = readMessageBodyText(bodyText);
 									if (urlListFromMessageBody.size() > 0) {
 										logger.info("Validating the URL from Message Body");
-										apiService.validateURLS(urlListFromMessageBody); // Calls the virustotal API
+										apiService.validateURLS(urlListFromMessageBody , message.getSubject()); // Calls the virustotal API
 									}
 									printURL++;
 								}
@@ -95,7 +95,7 @@ public class EmailListener extends MessageCountAdapter {
 									List<String> urlListFromQRCode = readStoreAttachment(bodyPart);
 									if (urlListFromQRCode.size() > 0) {
 										logger.info("Validating the URL from QR Code Body");
-										apiService.validateURLS(urlListFromQRCode); // Calls the virustotal API
+										apiService.validateURLS(urlListFromQRCode , message.getSubject()); // Calls the virustotal API
 									}
 								}
 							}
@@ -112,7 +112,7 @@ public class EmailListener extends MessageCountAdapter {
 		// Start the IDLE Loop
 		while (!Thread.interrupted()) {
 			try {
-				 logger.info("Starting IDLE");
+				// logger.info("Starting IDLE");
 				inbox.idle();
 			} catch (MessagingException e) {
 				logger.info("Messaging exception during IDLE");

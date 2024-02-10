@@ -8,10 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootApplication
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
 public class ReceiveEmailDemoApplication implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(ReceiveEmailDemoApplication.class);
 
@@ -19,8 +24,7 @@ public class ReceiveEmailDemoApplication implements CommandLineRunner {
 	EmailListener emailListener;
 
 	public static void main(String[] args) {
-		SpringApplication.run(ReceiveEmailDemoApplication.class, args);
-
+	    ConfigurableApplicationContext context = new SpringApplicationBuilder(ReceiveEmailDemoApplication.class).headless(false).run(args);
 	}
 
 	@Override
