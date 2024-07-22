@@ -1,0 +1,10 @@
+/target/
+target/classes/application.yml
+target/classes/email/reader/EmailConfiguration.class
+target/classes/email/reader/EmailListener$1.class
+target/classes/email/reader/EmailListener.class
+target/classes/email/reader/KeepAliveRunnable.class
+target/classes/email/reader/ReceiveEmailDemoApplication.class
+target/classes/META-INF/MANIFEST.MF
+target/classes/META-INF/maven/com.example/spring-boot-docker-complete/pom.properties
+target/classes/META-INF/maven/com.example/spring-boot-docker-complete/pom.xml

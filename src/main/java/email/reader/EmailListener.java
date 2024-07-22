@@ -44,6 +44,10 @@ public class EmailListener extends MessageCountAdapter {
 		this.password = password;
 	}
 
+	public EmailListener(EmailConfiguration emailConfiguration) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void startListening() throws MessagingException, InterruptedException, IOException {
 		Store store = session.getStore("imaps");
 		store.connect(username, password);
@@ -139,9 +143,8 @@ public class EmailListener extends MessageCountAdapter {
 
 	public List<String> readMessageBodyText(String bodyText) throws IOException, MessagingException {
 		List<String> urlList = new ArrayList<String>();
-
-		String urlPattern = "(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-		Pattern pattern = Pattern.compile(urlPattern);
+        String urlPattern = "(https?|ftp|file)://(?:www\\.)?[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+        Pattern pattern = Pattern.compile(urlPattern);
 		Matcher matcher = pattern.matcher(bodyText);
 
 		// Find and print URLs in the text

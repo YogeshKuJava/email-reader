@@ -36,6 +36,12 @@
 			<artifactId>async-http-client</artifactId>
 			<version>3.0.0.Beta3</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20240205</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.sun.mail</groupId>

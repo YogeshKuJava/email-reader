@@ -53,5 +53,14 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/91954/.m2/repository/org/asynchttpclient/async-http-client/3.0.0.Beta3/async-http-client-3.0.0.Beta3.jar" sourcepath="C:/Users/91954/.m2/repository/org/asynchttpclient/async-http-client/3.0.0.Beta3/async-http-client-3.0.0.Beta3-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.asynchttpclient"/>
+			<attribute name="maven.artifactId" value="async-http-client"/>
+			<attribute name="maven.version" value="3.0.0.Beta3"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
